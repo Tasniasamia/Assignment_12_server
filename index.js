@@ -1,6 +1,6 @@
 const express = require('express')
 const app = express()
-const { MongoClient, ServerApiVersion } = require('mongodb');
+const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 
 const port = process.env.port || 6889
 var cors = require('cors')
@@ -29,7 +29,57 @@ async function run() {
     const database = client.db("assignment-12");
     const movies = database.collection("classes");
     const movies2 = database.collection("Instructor");
+    const user = database.collection("UserCollection2");
 
+app.post('/users',async(req,res)=>{
+  const data=req.body;
+  const result=await user.insertOne(data);
+  res.send(result);
+  console.log(result);
+
+})
+app.patch('/updateinstructor/:id',async(req,res)=>{
+  const id=req.params.id;
+  const query={_id:new ObjectId(id)};
+  const updateDoc = {
+
+    $set: {
+
+     
+      
+      role2:"Instructor"
+
+    },
+
+  };
+
+const result=await user.updateOne(query,updateDoc);
+console.log(result);
+res.send(result);
+})
+app.patch('/updateinstructor2/:id',async(req,res)=>{
+  const id=req.params.id;
+  const query={_id:new ObjectId(id)};
+  const updateDoc = {
+
+    $set: {
+
+      role:"Admin",
+      
+     
+
+    },
+
+  };
+
+const result=await user.updateOne(query,updateDoc);
+console.log(result);
+res.send(result);
+})
+app.get('/signup_users',async(req,res)=>{
+  const data=await user.find().toArray();
+  res.send(data);
+})
 app.get('/classes_name',async(req,res)=>{
     const result=await movies.find().toArray();
     res.send(result);
