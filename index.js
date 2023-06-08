@@ -89,8 +89,59 @@ app.post('/AddClass',async(req,res)=>{
   console.log(result);
   res.send(result);
 })
+//update_pending_to_approved
+app.patch('/Status_Approve/:id',async(req,res)=>{
+  const id=req.params.id;
+  const query={_id:new ObjectId(id)};
+  const updateDoc = {
+
+    $set: {
+
+      
+status:"Approved",
+      
+     
+
+    },
+
+  };
+
+const result=await AddClassdata.updateOne(query,updateDoc);
+console.log(result);
+res.send(result);
 
 
+})
+//update_pending_to_denied
+app.put('/Status_Denied/:id',async(req,res)=>{
+  const data=req.body;
+  const id=req.params.id;
+  const query={_id:new ObjectId(id)};
+  const updateDoc = {
+
+    $set: {
+
+      
+      ...data,status:"Deny",
+
+      
+     
+
+    },
+
+  };
+
+const result=await AddClassdata.updateOne(query,updateDoc);
+console.log(result);
+res.send(result);
+
+
+})
+//Admin Get AddClassData
+app.get('/getAddClassData',async(req,res)=>{
+  const result=await AddClassdata.find().toArray();
+  res.send(result);
+})
 
 //Student wise Navbar
 
