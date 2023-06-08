@@ -30,7 +30,9 @@ async function run() {
     const movies = database.collection("classes");
     const movies2 = database.collection("Instructor");
     const user = database.collection("UserCollection2");
+const AddClassdata=database.collection("AddClassData");
 
+//Admin
 app.post('/users',async(req,res)=>{
   const data=req.body;
   const result=await user.insertOne(data);
@@ -38,6 +40,7 @@ app.post('/users',async(req,res)=>{
   console.log(result);
 
 })
+//Admin
 app.patch('/updateinstructor/:id',async(req,res)=>{
   const id=req.params.id;
   const query={_id:new ObjectId(id)};
@@ -57,6 +60,7 @@ const result=await user.updateOne(query,updateDoc);
 console.log(result);
 res.send(result);
 })
+//Admin
 app.patch('/updateinstructor2/:id',async(req,res)=>{
   const id=req.params.id;
   const query={_id:new ObjectId(id)};
@@ -78,11 +82,17 @@ res.send(result);
 })
 
 
+//Instructor
+app.post('/AddClass',async(req,res)=>{
+  const data=req.body;
+  const result=await AddClassdata.insertOne(data);
+  console.log(result);
+  res.send(result);
+})
 
 
 
-
-
+//Student wise Navbar
 
 app.get('/Studentwise/:email',async(req,res)=>{
   const email=req.params.email;
@@ -98,7 +108,7 @@ app.get('/Studentwise/:email',async(req,res)=>{
 })
 
 
-
+//Instructor wise Navbar
 app.get('/Instructorwise/:email',async(req,res)=>{
   const email=req.params.email;
   console.log(email);
@@ -112,7 +122,7 @@ app.get('/Instructorwise/:email',async(req,res)=>{
   }
 })
 
-
+//Admin wise Navbar
 
 app.get('/Adminwise/:email',async(req,res)=>{
   const email=req.params.email;
@@ -135,108 +145,18 @@ app.get('/Adminwise/:email',async(req,res)=>{
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+//After Signup
 
 app.get('/signup_users',async(req,res)=>{
   const data=await user.find().toArray();
   res.send(data);
 })
+//All Approved Classes Collection
 app.get('/classes_name',async(req,res)=>{
     const result=await movies.find().toArray();
     res.send(result);
 })
-
+//All Instructor Classes Collection
 app.get('/instructors',async(req,res)=>{
     const result=await movies2.find().toArray();
     res.send(result);
