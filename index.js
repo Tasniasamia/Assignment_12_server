@@ -76,6 +76,158 @@ const result=await user.updateOne(query,updateDoc);
 console.log(result);
 res.send(result);
 })
+
+
+
+
+
+
+
+
+app.get('/Studentwise/:email',async(req,res)=>{
+  const email=req.params.email;
+  console.log(email);
+  const query={email:email};
+  const data=await user.findOne(query);
+  console.log("getdata",data);
+  if(data?.role2==="Student"){
+    const admin={Student:data?.role2==="Student"};
+    console.log(admin);
+    res.send(admin);
+  }
+})
+
+
+
+app.get('/Instructorwise/:email',async(req,res)=>{
+  const email=req.params.email;
+  console.log(email);
+  const query={email:email};
+  const data=await user.findOne(query);
+  console.log("getdata",data);
+  if(data?.role2==="Instructor"){
+    const admin={Instructor:data?.role2==="Instructor"};
+    console.log(admin);
+    res.send(admin);
+  }
+})
+
+
+
+app.get('/Adminwise/:email',async(req,res)=>{
+  const email=req.params.email;
+  console.log(email);
+  const query={email:email};
+  const data=await user.findOne(query);
+  console.log("getdata",data);
+  if(data?.role==="Admin"){
+    const admin={Admin:data?.role==="Admin"};
+    console.log(admin);
+    res.send(admin);
+  }})
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 app.get('/signup_users',async(req,res)=>{
   const data=await user.find().toArray();
   res.send(data);
