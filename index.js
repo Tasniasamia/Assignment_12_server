@@ -35,6 +35,12 @@ const AddClassdata=database.collection("AddClassData");
 //Admin
 app.post('/users',async(req,res)=>{
   const data=req.body;
+  const email=data.email;
+  const query={email:email};
+  const avoiddata=await user.findOne(query);
+  if(avoiddata){
+ return   res.send({message:"user already exists"});
+  }
   const result=await user.insertOne(data);
   res.send(result);
   console.log(result);
@@ -82,13 +88,14 @@ res.send(result);
 })
 
 
-//Instructor
+//Instructor Send Add_Class Data
 app.post('/AddClass',async(req,res)=>{
   const data=req.body;
   const result=await AddClassdata.insertOne(data);
   console.log(result);
   res.send(result);
 })
+
 //update_pending_to_approved
 app.patch('/Status_Approve/:id',async(req,res)=>{
   const id=req.params.id;
@@ -137,7 +144,38 @@ res.send(result);
 
 
 })
-//Admin Get AddClassData
+//Instructor Get AddClass Data by id
+app.get('/getAddClassbyId/:id',async(req,res)=>{
+const id=req.params.id;
+const query={_id:new ObjectId(id)};
+const result=await AddClassdata.findOne(query)
+res.send(result);
+
+})
+//Updated AddClassData ----Instructor
+app.patch('/Update_AddClassItem/:id',async(req,res)=>{
+const id=req.params.id;
+  const data=req.body;
+  const query={_id:new ObjectId(id)};
+  const updateDoc = {
+
+    $set: {
+
+      
+      ...data
+
+      
+     
+
+    },
+
+  };
+  const result=await AddClassdata.updateOne(query,updateDoc);
+console.log(result);
+res.send(result);
+  
+})
+//Admin Get AddClassData   ,Instructor Also by using same api
 app.get('/getAddClassData',async(req,res)=>{
   const result=await AddClassdata.find().toArray();
   res.send(result);
