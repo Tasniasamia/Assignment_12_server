@@ -204,7 +204,8 @@ res.send(result);
 })
 //Admin Get AddClassData   ,Instructor Also by using same api
 app.get('/getAddClassData',async(req,res)=>{
-  const result=await AddClassdata.find().toArray();
+  const email=req.query.email;
+  const result=await AddClassdata.find({Instructor_Email:email}).toArray();
   res.send(result);
 })
 
