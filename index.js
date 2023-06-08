@@ -7,7 +7,7 @@ var cors = require('cors')
 require('dotenv').config()
 app.use(cors());
 app.use(express.json());
-
+var jwt = require('jsonwebtoken');
 const uri =`mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0.ioy1chb.mongodb.net/?retryWrites=true&w=majority`;
 
 // Create a MongoClient with a MongoClientOptions object to set the Stable API version
@@ -31,7 +31,34 @@ async function run() {
     const movies2 = database.collection("Instructor");
     const user = database.collection("UserCollection2");
 const AddClassdata=database.collection("AddClassData");
+//verify jwt token
+const verifyjwt=(req,res,next)=>{
+  const authorization=req.headers.authorization;
+  console.log("authorization",authorization);
+  if(!authorization){
+return res.status(401).send({error:true,message:"unauthorized user"})
+  };
+  const token=req?.headers?.authorization.split(" ")[1];
+  console.log("token",token);
+  jwt.verify(token, process.env.GENERATE_KEY, function(err, decoded) {
+   
+      if(err){
+        
+          return res.status(403).send({error:true,message:"no valid user"})
 
+      }
+     req.decoded=decoded;
+      next();
+    });
+ } 
+ //verify jwt token
+ app.post('/jwt',async(req,res)=>{
+  const data=req.body;
+  var token = jwt.sign(data, process.env.GENERATE_KEY, { expiresIn: '10h' });
+  console.log("mytoken",token);
+  res.send({token});
+  
+     })
 //Admin
 app.post('/users',async(req,res)=>{
   const data=req.body;
