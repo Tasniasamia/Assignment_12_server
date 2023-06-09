@@ -246,6 +246,13 @@ app.get('/getApprovedClass',async(req,res)=>{
   const result=await AddClassdata.find({status:"Approved"}).toArray();
   res.send(result);
 })
+//getapproveclassdatabyid
+app.get('/getApprovedClass/:id',async(req,res)=>{
+  const id=req.params.id;
+  const query={_id:new ObjectId(id)};
+  const result=await AddClassdata.findOne(query)
+  res.send(result);
+})
 //Student wise Navbar
 
 app.get('/Studentwise/:email',async(req,res)=>{
