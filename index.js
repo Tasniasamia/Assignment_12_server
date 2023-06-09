@@ -31,6 +31,7 @@ async function run() {
     const movies2 = database.collection("Instructor");
     const user = database.collection("UserCollection2");
 const AddClassdata=database.collection("AddClassData");
+const cartCollectiion=database.collection("Cart");
 //verify jwt token
 const verifyjwt=(req,res,next)=>{
   const authorization=req.headers.authorization;
@@ -101,7 +102,7 @@ app.patch('/updateinstructor2/:id',async(req,res)=>{
 
     $set: {
 
-      role:"Admin",
+      role2:"Admin",
       
      
 
@@ -202,13 +203,49 @@ console.log(result);
 res.send(result);
   
 })
-//Admin Get AddClassData   ,Instructor Also by using same api
+//AddCart data for user
+app.post('/CartCollection',async(req,res)=>{
+  const data=req.body;
+  const result=await cartCollectiion.insertOne(data);
+  res.send(result);
+})
+app.patch('/UpdateAddClassdataseat/:id',async(req,res)=>{
+const id=req.params.id;
+  const data=req.body;
+  const query={_id:new ObjectId(id)};
+  const updateDoc = {
+
+    $set: {
+
+      
+      ...data
+
+      
+     
+
+    },
+
+  };
+  const result=await AddClassdata.updateOne(query,updateDoc);
+console.log(result);
+res.send(result);
+})
+//Instructor Get AddClassData   by his email
 app.get('/getAddClassData',async(req,res)=>{
   const email=req.query.email;
   const result=await AddClassdata.find({Instructor_Email:email}).toArray();
   res.send(result);
 })
-
+//Admin Get All AddClassData
+app.get('/getAddClassDataAll',async(req,res)=>{
+  const result=await AddClassdata.find().toArray();
+  res.send(result);
+})
+//We Get AddClassData As Approved Status
+app.get('/getApprovedClass',async(req,res)=>{
+  const result=await AddClassdata.find({status:"Approved"}).toArray();
+  res.send(result);
+})
 //Student wise Navbar
 
 app.get('/Studentwise/:email',async(req,res)=>{
@@ -247,8 +284,8 @@ app.get('/Adminwise/:email',async(req,res)=>{
   const query={email:email};
   const data=await user.findOne(query);
   console.log("getdata",data);
-  if(data?.role==="Admin"){
-    const admin={Admin:data?.role==="Admin"};
+  if(data?.role2==="Admin"){
+    const admin={Admin:data?.role2==="Admin"};
     console.log(admin);
     res.send(admin);
   }})
@@ -267,6 +304,12 @@ app.get('/Adminwise/:email',async(req,res)=>{
 app.get('/signup_users',async(req,res)=>{
   const data=await user.find().toArray();
   res.send(data);
+})
+//get data by emailwise from userCollection
+app.get('/signup_usersbyemail',async(req,res)=>{
+  const data=req.query.email;
+  const result=await user.findOne({email:data});
+  res.send(result);
 })
 //All Approved Classes Collection
 app.get('/classes_name',async(req,res)=>{
