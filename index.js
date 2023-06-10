@@ -209,6 +209,10 @@ app.post('/CartCollection',async(req,res)=>{
   const result=await cartCollectiion.insertOne(data);
   res.send(result);
 })
+app.get('/Cartdata',async(req,res)=>{
+  const result=await cartCollectiion.find().toArray();
+  res.send(result);
+})
 app.patch('/UpdateAddClassdataseat/:id',async(req,res)=>{
 const id=req.params.id;
   const data=req.body;
