@@ -258,6 +258,11 @@ app.get('/enrollemail',async(req,res)=>{
   const result=await enrollClass.find({instructor_email:email}).toArray();
   res.send(result);
 })
+app.get('/enrollemail2',async(req,res)=>{
+  const email=req.query.email;
+  const result=await enrollClass.find({instructor_email:email}).sort({date: -1 }).toArray();
+  res.send(result);
+})
 // app.patch('/cartseatUpdate/:id',async(req,res)=>{
 //   const id=req.params.id;
 //   const data=req.body;
