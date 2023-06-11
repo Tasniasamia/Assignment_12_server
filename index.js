@@ -210,6 +210,17 @@ res.send(result);
 //AddCart data for user
 app.post('/CartCollection',async(req,res)=>{
   const data=req.body;
+  const id=data.class_id;
+  const email=data.instructor_email;
+  const userid=data.instructor_id;
+
+  // const getclassid=await cartCollectiion.findOne({});
+  const emailget=await cartCollectiion.findOne({class_id:id,instructor_email:email}); 
+  // const useridget=await cartCollectiion.findOne({instructor_id:userid});
+  if(emailget){
+    return   res.send({message:" already enrolled"});
+  }
+  
   const result=await cartCollectiion.insertOne(data);
   res.send(result);
 })
