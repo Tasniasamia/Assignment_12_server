@@ -35,6 +35,7 @@ async function run() {
     const user = database.collection("UserCollection2");
 const AddClassdata=database.collection("AddClassData");
 const cartCollectiion=database.collection("Cart");
+const enrollClass=database.collection("enrollClass");
 //verify jwt token
 const verifyjwt=(req,res,next)=>{
   const authorization=req.headers.authorization;
@@ -244,8 +245,39 @@ app.post("/create-payment-intent", async (req, res) => {
     clientSecret: paymentIntent.client_secret,
   });
 });
+
+
+//enrollclass
+app.post('/enrollClass',async(req,res)=>{
+  const data=req.body;
+  const result=await enrollClass.insertOne(data);
+  res.send(result);
+})
+app.get('/enrollemail',async(req,res)=>{
+  const email=req.query.email;
+  const result=await enrollClass.find({instructor_email:email}).toArray();
+  res.send(result);
+})
+// app.patch('/cartseatUpdate/:id',async(req,res)=>{
+//   const id=req.params.id;
+//   const data=req.body;
+//   const query={_id:new ObjectId(id)};
+ 
+//   const result=await cartCollectiion.updateOne(query,updateDoc);
+// console.log(result);
+// res.send(result);
+
+// })
+app.delete('/cartdatadel/:id',async(req,res)=>{
+  const id=req.params.id;
+  const query={_id:new ObjectId(id)};
+  const result=await cartCollectiion.deleteOne(query);
+  res.send(result);
+})
 app.get('/Cartdata',async(req,res)=>{
-  const result=await cartCollectiion.find().toArray();
+  const email=req.query.email;
+  const result=await cartCollectiion.find({
+    instructor_email:email}).toArray();
   res.send(result);
 })
 app.get('/Cartdata/:id',async(req,res)=>{
@@ -274,6 +306,31 @@ const id=req.params.id;
   const result=await AddClassdata.updateOne(query,updateDoc);
 console.log(result);
 res.send(result);
+})
+//update totalenroll
+
+app.put('/updateaddclassdataenroll/:id',async(req,res)=>{
+  const id=req.params.id;
+  const data=req.body;
+  const query={_id:new ObjectId(id)};
+  const updateDoc = {
+
+    $set: {
+
+      
+      ...data
+
+      
+     
+
+    },
+
+  };
+  const result=await AddClassdata.updateOne(query,updateDoc);
+console.log(result);
+res.send(result);
+
+
 })
 //Instructor Get AddClassData   by his email
 app.get('/getAddClassData',async(req,res)=>{
