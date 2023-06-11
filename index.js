@@ -1,5 +1,8 @@
 const express = require('express')
 const app = express()
+const stripe = require("stripe")(`sk_test_51NEdRqLQLVWVnV1HZTftjIeUs0Q8a4RjIJHxQRAZ2wlBnVXvIMZI0IqBGsJHAh7nXrqB9N6MRDcxYMbE0M2j40OB00NGWWEYTq`);
+
+
 const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 
 const port = process.env.port || 6889
@@ -209,8 +212,46 @@ app.post('/CartCollection',async(req,res)=>{
   const result=await cartCollectiion.insertOne(data);
   res.send(result);
 })
+
+// app.post("/createpayment",async (req, res) => {
+//   console.log("Hellow payment");
+//   const price= req.body;
+//   const amount= price * 100;
+// console.log("amount",price);
+ 
+//   const paymentIntent = await stripe.paymentIntents.create({
+//     amount: amount,
+//     currency: "usd",
+//     payment_method_types: ["card"],
+//   });
+// console.log("PAYMENT",paymentIntent);
+//   res.send({
+//     clientSecret: paymentIntent.client_secret,
+//   });
+// });
+
+app.post("/create-payment-intent", async (req, res) => {
+  const {price}= req.body;
+  const amount= parseInt(price * 100);
+  // Create a PaymentIntent with the order amount and currency
+  const paymentIntent = await stripe.paymentIntents.create({
+    amount: amount,
+    currency: "usd",
+    payment_method_types: ["card"],
+  });
+
+  res.send({
+    clientSecret: paymentIntent.client_secret,
+  });
+});
 app.get('/Cartdata',async(req,res)=>{
   const result=await cartCollectiion.find().toArray();
+  res.send(result);
+})
+app.get('/Cartdata/:id',async(req,res)=>{
+  const id=req.params.id;
+  const query={_id:new ObjectId(id)};
+  const result=await cartCollectiion.findOne(query);
   res.send(result);
 })
 app.patch('/UpdateAddClassdataseat/:id',async(req,res)=>{
@@ -264,7 +305,7 @@ app.get('/Studentwise/:email',async(req,res)=>{
   console.log(email);
   const query={email:email};
   const data=await user.findOne(query);
-  console.log("getdata",data);
+  console.log("getdataStudent",data);
   if(data?.role2==="Student"){
     const admin={Student:data?.role2==="Student"};
     console.log(admin);
@@ -279,7 +320,7 @@ app.get('/Instructorwise/:email',async(req,res)=>{
   console.log(email);
   const query={email:email};
   const data=await user.findOne(query);
-  console.log("getdata",data);
+  console.log("getdataInstructor",data);
   if(data?.role2==="Instructor"){
     const admin={Instructor:data?.role2==="Instructor"};
     console.log(admin);
@@ -294,7 +335,7 @@ app.get('/Adminwise/:email',async(req,res)=>{
   console.log(email);
   const query={email:email};
   const data=await user.findOne(query);
-  console.log("getdata",data);
+  console.log("getdataAdmin",data);
   if(data?.role2==="Admin"){
     const admin={Admin:data?.role2==="Admin"};
     console.log(admin);
