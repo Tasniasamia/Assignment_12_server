@@ -8,7 +8,14 @@ const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 const port = process.env.port || 6889
 var cors = require('cors')
 require('dotenv').config()
-app.use(cors());
+app.use(
+  cors({
+    origin: "*",
+    methods: "GET,POST,PATCH,PUT,DELETE",
+    "Access-Control-Allow-Origin": "*",
+    "Access-Control-Allow-Headers": "*",
+  })
+);
 app.use(express.json());
 var jwt = require('jsonwebtoken');
 const uri =`mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0.ioy1chb.mongodb.net/?retryWrites=true&w=majority`;
@@ -156,6 +163,7 @@ app.put('/Status_Denied/:id',async(req,res)=>{
   const data=req.body;
   const id=req.params.id;
   const query={_id:new ObjectId(id)};
+  const options = { upsert: true };
   const updateDoc = {
 
     $set: {
@@ -170,7 +178,7 @@ app.put('/Status_Denied/:id',async(req,res)=>{
 
   };
 
-const result=await AddClassdata.updateOne(query,updateDoc);
+const result=await AddClassdata.updateOne(query,updateDoc,options);
 console.log(result);
 res.send(result);
 
