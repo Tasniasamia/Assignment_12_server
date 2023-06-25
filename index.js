@@ -451,10 +451,18 @@ app.get('/classes_name',async(req,res)=>{
 })
 //All Instructor Classes Collection
 app.get('/instructors',async(req,res)=>{
-    const result=await movies2.find().toArray();
+  const{page,limit}=req.query;
+  const pageInt=parseInt(page);
+  const limitInt=parseInt(limit);
+
+  
+    const result=await movies2.find().skip((pageInt-1)*limitInt).limit(limitInt).toArray();
     res.send(result);
 })
-
+app.get('/instructors2',async(req,res)=>{
+  const result=await movies2.find().toArray();
+  res.send(result);
+})
     await client.db("admin").command({ ping: 1 });
     console.log("Pinged your deployment. You successfully connected to MongoDB!");
   } finally {
