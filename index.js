@@ -455,11 +455,18 @@ app.get('/instructors',async(req,res)=>{
   const pageInt=parseInt(page);
   const limitInt=parseInt(limit);
 
+     ife(pageInt && limitInt)
+      const result=await movies2.find().skip((pageInt-1)*limitInt).limit(limitInt).toArray();
+      res.send(result);
+     
+     
+     
   
-    const result=await movies2.find().skip((pageInt-1)*limitInt).limit(limitInt).toArray();
-    res.send(result);
+    const result2=await movies2.find().toArray();
+    res.send(result2);
+  
 })
-app.get('/instructors2',async(req,res)=>{
+app.get('/instructorss2',async(req,res)=>{
   const result=await movies2.find().toArray();
   res.send(result);
 })
